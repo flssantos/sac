@@ -2,10 +2,17 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:h="http://java.sun.com/jsf/html"> 
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:s="http://jboss.com/products/seam/taglib"> 
 
-<h:head></h:head> 
-<body> 
-	<h:outputLabel value="#{mainController.mensagem}" />
-</body> 
+<h:head>
+<title>Servi&ccedil;o de Atendimento ao Consumidor OLX</title>
+</h:head> 
+<h:body>
+	<h:form>
+	<h1>Servi&ccedil;o de Atendimento ao Consumidor OLX</h1>
+	<p><h:outputLink id="cadastro" value="cadastroAtendimentos.xhtml">Cadastro de atendimentos</h:outputLink></p>
+	<p><h:outputLink id="lista" value="listaAtendimentos.xhtml">Lista de atendimentos</h:outputLink></p>
+	</h:form>
+</h:body> 
 </html>

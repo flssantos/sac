@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings xmlns="http://java.sun.com/xml/ns/persistence/orm"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_1_0.xsd"
+	version="1.0">
+	
+	<package>com.milestone.youknow.model</package>	 
+
+	<!-- Mapeamento da classe Bulletin -->
+	<entity class="Atendimento">
+		<table name="ATENDIMENTO"/>
+		<attributes>
+			<id name="id">
+				<column name="id"/>
+			</id>
+			<basic name="tipo">
+				<column name="tipo" nullable="false"/>
+			</basic>
+			<basic name="motivo">
+				<column name="motivo" nullable="false"/>
+			</basic>
+			<basic name="detalhes">
+				<column name="detalhes"/>
+			</basic>
+			<basic name="data">
+				<column name="data"/>
+				<temporal>TIMESTAMP</temporal>
+			</basic>
+			<many-to-one name="estado">
+				<join-column name="sigla"/>
+			</many-to-one>
+		</attributes>
+	</entity>
+
+	<!-- Mapeamento da classe Community -->
+	<entity class="Community">
+		<table name="COMUNIDADE"/>
+		<attributes>
+			<id name="sigla">
+				<column name="sigla"/>
+			</id>
+			<basic name="estado">
+				<column name="estado"/>
+			</basic>			
+			<!-- one-to-many name="atendimentos" >
+				<join-column name="estado"/>
+			</one-to-many-->				
+		</attributes>
+	</entity>
+
+</entity-mappings>
