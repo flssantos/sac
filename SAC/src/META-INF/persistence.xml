@@ -6,9 +6,12 @@
              version="1.0">
              
    <persistence-unit name="sac">
-      <provider>org.hibernate.ejb.HibernatePersistence</provider>
-      <jta-data-source>sac</jta-data-source>
-      <mapping-file>META-INF/orm.xml</mapping-file>
+      <!-- provider>org.hibernate.ejb.HibernatePersistence</provider-->
+      <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+      <!-- jta-data-source>sac</jta-data-source>
+      <mapping-file>META-INF/orm.xml</mapping-file-->
+      <class>br.com.modelo.Estado</class>
+      <class>br.com.modelo.Atendimento</class>
       <properties>
         <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver" />
  		<property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5433/SAC_BD" ></property>
