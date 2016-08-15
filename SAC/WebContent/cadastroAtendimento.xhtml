@@ -1,0 +1,70 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jstl/core"
+      xmlns:p="http://java.sun.com/jsf/html">
+
+<h:head>
+	<title>Cadastro de atendimentos</title>
+</h:head> 
+<h:body>
+	#{mainController.iniciaEntidades()} 
+	<h:form>
+	<h:panelGrid columns="2" border="0" style="width: 100%" 
+	columnClasses="myWidth80 vcenter-alignment left_alignment, myWidth20 vcenter-alignment right_aligment">
+	    <h:panelGroup><h1>Cadastro de atendimentos</h1></h:panelGroup>
+	    <h:panelGroup><h:outputLink id="index1" value="index.xhtml">Retorna &agrave; P&aacute;gina Principal</h:outputLink></h:panelGroup>
+	</h:panelGrid>
+	
+	<h:messages id="messages" style="color:red"/>
+	
+	<p:panelGrid style="width: 100%" layout="block">
+        
+        <h:outputText value="Tipo do Atendimento" />
+        <h:selectOneMenu id="tipoAtendimento" value="#{mainController.atendimento.tipo}" >
+        	<f:selectItem itemValue="" itemLabel="" />
+           	<c:forEach items="#{mainController.retornaTiposAtendimentosPossiveis()}" var="tipo">
+	    	    <f:selectItem itemValue="#{tipo.getValor().charAt(0)}" itemLabel="#{tipo.getValor()}" />
+	        </c:forEach>
+        </h:selectOneMenu>
+        
+        <p></p>
+        
+       	<h:outputText value="Estado" />
+        <h:selectOneMenu id="estado" value="#{mainController.estado.sigla}" >
+        	<f:selectItem itemValue="" itemLabel="" />
+           	<c:forEach items="#{mainController.retornaEstadosPossiveis()}" var="estado">
+	    	    <f:selectItem itemValue="#{estado.sigla}" itemLabel="#{estado.nome}" />
+	        </c:forEach>
+        </h:selectOneMenu>
+        
+        <p></p>
+        
+        <h:outputText value="Motivo do Atendimento" />
+        <h:selectOneMenu id="motivoAtendimento" value="#{mainController.atendimento.motivo}" >
+        	<f:selectItem itemValue="" itemLabel="" />
+           	<c:forEach items="#{mainController.retornaMotivosAtendimentosPossiveis()}" var="motivo">
+	    	    <f:selectItem itemValue="#{motivo.getValor().charAt(0)}" itemLabel="#{motivo.getValor()}" />
+	        </c:forEach>
+        </h:selectOneMenu>
+        
+        <p></p>
+        
+        <h:outputText value="Detalhes do Atendimento" />
+        <h:inputTextarea value="#{mainController.atendimento.detalhes}" maxlength="500"
+        rows="10" cols="60" style="resize: none" />
+        
+        <p></p>
+        
+    </p:panelGrid>
+    
+    <p></p>
+    <p:commandButton value="Enviar" icon="ui-icon-star" action="#{mainController.persistAtendimento()}" ajax="false">
+    </p:commandButton>
+	<br></br>
+	<p><h:outputLink id="index2" value="index.xhtml">Retorna &agrave; P&aacute;gina Principal</h:outputLink></p>
+	</h:form>
+</h:body> 
+</html>

@@ -3,11 +3,15 @@ package br.com.modelo;
 import java.util.Date;
 
 import javax.faces.bean.ManagedBean;
+import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.hibernate.annotations.Entity;
+
 import org.hibernate.validator.Length;
 
 /**
@@ -15,14 +19,15 @@ import org.hibernate.validator.Length;
  */
 @Entity
 @ManagedBean(name = "atendimento")
+@Table(name = "public.\"ATENDIMENTO\"")
 public class Atendimento implements java.io.Serializable
 {
 	private static final long serialVersionUID = 1L;
 	private int id;
-	private char tipo;
+	private char tipo = 'T';
 	private String tipoExtenso;
-	private String estado;
-	private char motivo;
+	private Estado estado;
+	private char motivo = 'D';
 	private String motivoExtenso;
 	private String detalhes;
 	private Date data;
@@ -48,8 +53,11 @@ public class Atendimento implements java.io.Serializable
 	
 	/**
 	 * Retorna o tipo do atendimento no banco de dados
+	 * Por default, o valor é "T" (atendimentoo por telefone)
+	 * Outros valores possíveis: "C" (chat) e "E" (email)
 	 *@return tipo do atendimento no banco de dados.
 	 */
+	@Column(name="tipo")
 	public char getTipo()
 	{
 		return tipo;
@@ -66,6 +74,7 @@ public class Atendimento implements java.io.Serializable
 	
 	/**
 	 * Retorna o tipo do atendimento a ser exibido na tela
+	 * Traz o tipo por extenso. Não só a primeira letra como em getTipo()
 	 *@return o tipo do atendimento a ser exibido na tela
 	 */
 	@Transient
@@ -88,7 +97,8 @@ public class Atendimento implements java.io.Serializable
 	 *@return o estado onde foi aberto o atendimento
 	 */
 	@ManyToOne
-	public String getEstado() 
+	@JoinColumn(name="estado", referencedColumnName = "sigla")
+	public Estado getEstado() 
 	{
 		return estado;
 	}
@@ -97,15 +107,18 @@ public class Atendimento implements java.io.Serializable
 	 * Configura o estado da federação onde foi aberto o atendimento
 	 *@param o estado onde foi aberto o atendimento
 	 */
-	public void setEstado(String estado) 
+	public void setEstado(Estado estado) 
 	{
 		this.estado = estado;
 	}
 	
 	/**
 	 * Retorna o motivo pelo qual foi aberto o atendimento. A ser guardado no banco de dados.
+	 * Por default, o valor é "D" (atendimento de dúvida)
+	 * Outros valores possíveis: "S" (sugestão) e "E" (elogio)
 	 *@retrun o motivo pelo qual foi aberto o atendimento
 	 */
+	@Column(name="motivo")
 	public char getMotivo() 
 	{
 		return motivo;
@@ -122,6 +135,7 @@ public class Atendimento implements java.io.Serializable
 	
 	/**
 	 * Retorna o motivo pelo qual foi aberto o atendimento. A ser exibido na tela.
+	 * Traz o motivo por extenso. Não só a primeira letra como em getMotivo()
 	 *@retrun o motivo pelo qual foi aberto o atendimento
 	 */
 	@Transient
@@ -144,6 +158,7 @@ public class Atendimento implements java.io.Serializable
 	 *@retrun os detalhes do atendimento
 	 */
 	@Length(max = 500, message = "Campo suporta no máximo 500 caracteres")
+	@Column(name="detalhes")
 	public String getDetalhes() 
 	{
 		return detalhes;
@@ -162,6 +177,7 @@ public class Atendimento implements java.io.Serializable
 	 * Retorna a data do atendimento
 	 *@retrun a data do atendimento
 	 */
+	@Column(name="data")
 	public Date getData() 
 	{
 		return data;

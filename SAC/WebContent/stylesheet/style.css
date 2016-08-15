@@ -1,0 +1,43 @@
+.fifty-percent {
+     width: 50%;
+}
+
+.forty-percent {
+     width: 40%;
+}
+
+.thirty-percent {
+     width: 30%;
+}
+
+.twenty-five-percent {
+     width: 25%;
+}
+
+.twenty-percent {
+     width: 20%;
+}
+
+.left-alignment {
+     text-align: left;
+}
+
+.right-alignment {
+     text-align: right;
+}
+
+.center-alignment {
+     text-align: center;
+}
+
+.vcenter-alignment {
+     vertical-align: center;
+}
+
+
+.myWidth80 {width:80%; white-space:normal!important}
+.myWidth25 {width:25%; white-space:normal!important}
+.myWidth20 {width:20%; white-space:normal!important}
+.myWidth15 {width:15%; white-space:normal!important}
+.myWidth10 {width:10%; white-space:normal!important}
+

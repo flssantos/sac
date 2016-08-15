@@ -2,10 +2,69 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:h="http://java.sun.com/jsf/html"> 
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jstl/core"
+      xmlns:rich="http://java.sun.com/jsf/html"> 
 
-<h:head></h:head> 
+<h:head>
+	<title>Lista de atendimentos registrados</title>
+	<link href="#{facesContext.externalContext.requestContextPath}/stylesheet/style.css" rel="stylesheet" type="text/css" />
+</h:head> 
 <h:body> 
-	#{mainController.listaAtendimentos().get(0).id}
+	<h:form>
+		<h:panelGrid columns="2" border="0" style="width: 100%" 
+		columnClasses="myWidth80 vcenter-alignment left_alignment, myWidth20 vcenter-alignment right_aligment">
+		    <h:panelGroup><h1> Lista de atendimentos registrados</h1></h:panelGroup>
+		    <h:panelGroup><h:outputLink id="index1" value="index.xhtml">Retorna &agrave; P&aacute;gina Principal</h:outputLink></h:panelGroup>
+		</h:panelGrid>
+		<p></p>
+		<c:forEach items="#{mainController.listaAtendimentosPorEstadoPorData().keySet()}" var="dataDoAtendimento">
+		    <h2 style="color:#00b838">Data: #{mainController.formataDataBrasil(dataDoAtendimento)}</h2>
+		    
+			<c:forEach items="#{mainController.listaAtendimentosPorEstadoPorData().get(dataDoAtendimento).keySet()}" var="estadoDoAtendimento">
+			    <h3 style="color:blue">Estado: #{estadoDoAtendimento.getNome()}</h3>
+			    
+				<rich:dataTable 
+				value="#{mainController.listaAtendimentosPorEstadoPorData().get(dataDoAtendimento).get(estadoDoAtendimento)}" 
+					var="atendimento" id="tabelaListaAtendimentos" styleClass="no-border" style="text-align:left; width: 100%"
+					cellpadding="3px" cellspacing="2">
+						<rich:column headerClass="myWidth15">
+							<f:facet name="header">
+								<h:outputText value="Tipo do Atendimento" />
+							</f:facet>
+								<h:outputText value="#{atendimento.tipoExtenso}"/>
+						</rich:column>
+						<rich:column headerClass="myWidth15">
+							<f:facet name="header">
+								<h:outputText value="Motivo do Atendimento" />
+							</f:facet>
+								<h:outputText value="#{atendimento.motivoExtenso}"/>
+						</rich:column>
+						<rich:column headerClass="myWidth10">
+							<f:facet name="header">
+								<h:outputText value="Estado" />
+							</f:facet>
+								<h:outputText value="#{atendimento.estado.sigla}"/>
+						</rich:column>
+						<rich:column headerClass="myWidth10">
+							<f:facet name="header">
+								<h:outputText value="Data" />
+							</f:facet>
+								<h:outputText value="#{mainController.formataDataBrasil(atendimento.data)}"/>
+						</rich:column>
+						<rich:column>
+							<f:facet name="header">
+								<h:outputText value="Detalhes do Atendimento" />
+							</f:facet>
+								<h:outputText value="#{atendimento.detalhes}"/>
+						</rich:column>
+				</rich:dataTable>	
+				<p></p>					   		
+			</c:forEach>
+			<p></p>					   		
+		</c:forEach>
+		<br></br>
+		<p><h:outputLink id="index2" value="index.xhtml">Retorna &agrave; P&aacute;gina Principal</h:outputLink></p>
+	</h:form>
 </h:body> 
 </html>

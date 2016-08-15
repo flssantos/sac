@@ -1,9 +1,11 @@
 package br.com.modelo;
 
 import javax.faces.bean.ManagedBean;
+import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
-import org.hibernate.annotations.Entity;
 import org.hibernate.validator.Length;
 
 /**
@@ -11,11 +13,29 @@ import org.hibernate.validator.Length;
  */
 @Entity
 @ManagedBean(name = "estado")
-public class Estado 
+@Table(name = "public.\"ESTADO\"")
+public class Estado implements java.io.Serializable 
 {
+	private static final long serialVersionUID = 1L;
 	private String sigla;
 	private String nome;
 	
+	/**
+	 * Construtor padrão
+	 */
+	public Estado()
+	{
+		
+	}
+	
+	/**
+	 * Construtor com propriedades parametrizadas na inicialização
+	 */
+	public Estado(String sigla, String nome)
+	{
+		this.sigla = sigla;
+		this.nome = nome;
+	}
 	/**
 	 * Retorna a sigla do estado da federação
 	 *@return a sigla do estado da federação.
@@ -40,6 +60,7 @@ public class Estado
 	 *@return o nome do estado da federação.
 	 */
 	@Length(max = 50, message = "Campo suporta no máximo 50 caracteres")
+	@Column(name="nome")
 	public String getNome() 
 	{
 		return nome;
