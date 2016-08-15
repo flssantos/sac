@@ -13,9 +13,9 @@
   
  </navigation-rule>
  <application/>
- <!-- factory>
+ <factory>
        <exception-handler-factory>
        	br.com.exception.CustomExceptionHandlerFactory
        </exception-handler-factory>
-    </factory-->
+    </factory>
 </faces-config>
