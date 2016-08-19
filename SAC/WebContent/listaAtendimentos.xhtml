@@ -18,6 +18,11 @@
 		    <h:panelGroup><h:outputLink id="index1" value="index.xhtml">Retorna &agrave; P&aacute;gina Principal</h:outputLink></h:panelGroup>
 		</h:panelGrid>
 		<p></p>
+		
+		<div rendered="#{empty mainController.listaAtendimentosPorEstadoPorData().keySet()}">
+			<h3>N&atilde;o h&aacute; atendimentos a listar</h3>
+		</div>
+				
 		<c:forEach items="#{mainController.listaAtendimentosPorEstadoPorData().keySet()}" var="dataDoAtendimento">
 		    <h2 style="color:#00b838">Data: #{mainController.formataDataBrasil(dataDoAtendimento)}</h2>
 		    

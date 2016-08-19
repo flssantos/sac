@@ -1,7 +1,6 @@
 package br.com.controle;
 
 import java.io.Serializable;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.FieldPosition;
 import java.text.SimpleDateFormat;
@@ -17,6 +16,7 @@ import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 
 import org.hibernate.Criteria;
+import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.DetachedCriteria;
@@ -26,28 +26,27 @@ import org.hibernate.criterion.Property;
 
 import br.com.modelo.*;
 
+/**
+ * Classe de controle da aplicação
+ */
 @ManagedBean(name = "mainController")
 @SessionScoped
 public class MainController implements Serializable
 {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	private String msgErro;
-	//@PersistenceUnit(unitName="sac")
-	//private static EntityManagerFactory emf;
-	//@PersistenceContext
-	//private EntityManager em;
-	private Conexao c;
-	private SessionFactory sessionFactory;
-	private Session sessionBD;
-	private Atendimento atendimento;
-	private Estado estado;
+	protected static final long serialVersionUID = 1L;
+	protected String msgSistema;
+	protected Conexao conexao;
+	protected SessionFactory sessionFactory;
+	protected Session sessionBD;
+	protected Atendimento atendimento;
+	protected Estado estado;
 	
+	/**
+	 * Construtor padrão
+	 */
 	public MainController()
 	{
-		c = new Conexao("postgresql", "localhost","5433","SAC_BD","sac","sacsenha");
+		conexao = new Conexao();
 	}
 	
 	/**
@@ -106,23 +105,19 @@ public class MainController implements Serializable
 		}
 	}
 	
-	public void conectaBD()
-	{
-		c.conect();
-	}
-	
-	public void desconectaBD()
-	{
-		c.disconect();
-	}
-	
+	/**
+	 * abre uma sessão do hibernate e uma transação de DB
+	 */
 	public void openHibernateSession()
 	{
-		sessionFactory = c.getSessionFactory();
+		sessionFactory = conexao.getSessionFactory();
 		sessionBD = sessionFactory.openSession();
 		sessionBD.beginTransaction();
 	}
 	
+	/**
+	 * fecha uma sessão do hibernate e comita a transação de DB
+	 */
 	public void closeHibernateSession()
 	{
 		sessionBD.getTransaction().commit();
@@ -130,32 +125,66 @@ public class MainController implements Serializable
 		sessionFactory.close();
 	}
 	
+	/**
+	 * redirect para página de erro
+	 * @return String direcionando para página de erro
+	 */
 	public String geraErro()
 	{
 		return "erro";
 	}
 
-	public String getMsgErro() {
-		return msgErro;
+	/**
+	 * retorna mensagem do sistema a ser exibida na tela
+	 * @return String com a mensagem a ser exibida
+	 */
+	public String getMsgSistema() 
+	{
+		return msgSistema;
 	}
 
-	public void setMsgErro(String msgErro) {
-		this.msgErro = msgErro;
+	/**
+	 * configura mensagem do sistema a ser exibida na tela
+	 * @param String com a mensagem a ser exibida
+	 */
+	public void setMsgSistema(String msg) 
+	{
+		this.msgSistema = msg;
 	}
 	
-	public Atendimento getAtendimento() {
+	/**
+	 * retorna o atendimento que está sendo manipulado
+	 * @return Atendimento a ser manipulado
+	 */
+	public Atendimento getAtendimento() 
+	{
 		return atendimento;
 	}
 
-	public void setAtendimento(Atendimento atendimento) {
+	/**
+	 * configura o atendimento que está sendo manipulando
+	 * @param atendimento a ser manipulado
+	 */
+	public void setAtendimento(Atendimento atendimento)
+	{
 		this.atendimento = atendimento;
 	}
 	
-	public Estado getEstado() {
+	/**
+	 * retorna o estado que está sendo manipulado
+	 * @return Estado a ser manipulado
+	 */
+	public Estado getEstado()
+	{
 		return estado;
 	}
 
-	public void setEstado(Estado estado) {
+	/**
+	 * configura o estado que está sendo manipulando
+	 * @param estado a ser manipulado
+	 */
+	public void setEstado(Estado estado)
+	{
 		this.estado = estado;
 	}
 	
@@ -248,29 +277,40 @@ public class MainController implements Serializable
 	 * (do mais atual para o mais antigo) e estado
 	 * @throws uma exceção de BD
 	 */
+	@SuppressWarnings("unchecked")
 	public List<Atendimento> listaAtendimentos() throws SQLException
 	{
 		List<Atendimento> lista = new LinkedList<Atendimento>();
 		
-		conectaBD();
+		openHibernateSession();
+		
 		StringBuilder ejbql = new StringBuilder();
 		ejbql.append(" SELECT a.id, a.tipo, ");
 		ejbql.append(" a.motivo, a.detalhes, a.data,"); 
 		//ejbql.append(" to_char(a.data, 'dd/mm/yyyy') data_formatada, ");
 		ejbql.append(" e.sigla, e.nome");
-		ejbql.append(" FROM public.\"ATENDIMENTO\" a");
-		ejbql.append(" JOIN public.\"ESTADO\" e on a.estado = e.sigla");
+		ejbql.append(" FROM \"ATENDIMENTO\" a");
+		ejbql.append(" JOIN \"ESTADO\" e on a.estado = e.sigla");
 		ejbql.append(" order by a.data desc, e.nome, a.tipo, a.motivo");
 		
 		
-		ResultSet rs = c.executaQuery(ejbql.toString());
+		SQLQuery query = sessionBD.createSQLQuery(ejbql.toString());
+		List<Object[]> rows = query.list();
 		
-		while (rs.next())
+		final int IND_ID = 0;
+		final int IND_TIPO = 1;
+		final int IND_MOTIVO = 2;
+		final int IND_DETALHES = 3;
+		final int IND_DATA = 4;
+		final int IND_SIGLA = 5;
+		final int IND_NOME_ESTADO = 6;
+
+		for(Object[] row : rows)
 		{
 			Atendimento atendimento = new Atendimento();
 			
-			atendimento.setId(rs.getInt("id"));
-			atendimento.setTipo(rs.getString("tipo").charAt(0));
+			atendimento.setId(Integer.parseInt(row[IND_ID].toString()));
+			atendimento.setTipo(row[IND_TIPO].toString().charAt(0));
 			for (EnumTipoAtendimento enumTipo : EnumTipoAtendimento.values())
 			{
 				if (atendimento.getTipo() == enumTipo.name().charAt(0))
@@ -279,7 +319,7 @@ public class MainController implements Serializable
 					break;
 				}
 			}
-			atendimento.setMotivo(rs.getString("motivo").charAt(0));
+			atendimento.setMotivo(row[IND_MOTIVO].toString().charAt(0));
 			for (EnumMotivoAtendimento enumMotivo : EnumMotivoAtendimento.values())
 			{
 				if (atendimento.getMotivo() == enumMotivo.name().charAt(0))
@@ -288,15 +328,15 @@ public class MainController implements Serializable
 					break;
 				}
 			}
-			atendimento.setDetalhes(rs.getString("detalhes"));
-			atendimento.setData(rs.getDate("data"));
-			Estado estado = new Estado(rs.getString("sigla"), rs.getString("nome"));
+			atendimento.setDetalhes(row[IND_DETALHES].toString());
+			atendimento.setData((Date) row[IND_DATA]);
+			Estado estado = new Estado(row[IND_SIGLA].toString(), row[IND_NOME_ESTADO].toString());
 			atendimento.setEstado(estado);
 			
 			lista.add(atendimento);
 		}
 		
-        desconectaBD();
+		closeHibernateSession();
 		return lista;
 	}
 
@@ -373,23 +413,78 @@ public class MainController implements Serializable
 		return atendimentosPorEstadoPorData;
 	}
 	
+	/**
+	 * Inicia as entidades a serem manipuladas pelo Controller
+	 */
 	public void iniciaEntidades()
 	{
 		this.atendimento = new Atendimento();
 		this.estado = new Estado();
 	}
 	
+	/**
+	 * Inicia as entidades a serem manipuladas pelo Controller
+	 */
+	public Session getSessionBD() 
+	{
+		return sessionBD;
+	}
+
+	/**
+	 * Configura a sessão de BD a ser utilizada
+	 * @param uma sessão de BD
+	 */
+	public void setSessionBD(Session sessionBD) 
+	{
+		this.sessionBD = sessionBD;
+	}
 	
+	/**
+	 * Recupera uma conexão de BD
+	 * @return uma conexão de BD
+	 */
+	public Conexao getConexao() 
+	{
+		return conexao;
+	}
+
+	/**
+	 * Configura uma conexão de BD
+	 * @param uma conexão de BD
+	 */
+	public void setConexao(Conexao conexao) 
+	{
+		this.conexao = conexao;
+	}
+	
+	/**
+	 * Abre uma sessão do hibernate e persiste na base um atendimento
+	 * @return a página a ser redirecionada o sistema
+	 */
+	public String salvaAtendimento()
+	{
+		String redirect = "";
+		openHibernateSession();
+		redirect = persistAtendimento();
+		closeHibernateSession();
+		
+		return redirect;
+	}
+	
+	/**
+	 * persiste na base um atendimento
+	 * @return a página a ser redirecionada o sistema
+	 */
 	@SuppressWarnings("unchecked")
 	public String persistAtendimento()
 	{
-		openHibernateSession();
 		this.estado = (Estado) sessionBD.get(Estado.class, this.estado.getSigla());
 		if (this.estado == null)
 		{
+			setMsgSistema("Estado não encontrado.");
 			FacesContext.getCurrentInstance().addMessage(
                     null,
-                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Estado não encontrado.",
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, getMsgSistema(),
                                 "Erro no cadastro!"));
 			return "cadastroAtendimento.xhtml";
 		}
@@ -405,9 +500,10 @@ public class MainController implements Serializable
 		
 		if ((this.atendimento.getTipoExtenso() == null) || ("".equals(this.atendimento.getTipoExtenso())))
 		{
+			setMsgSistema("Tipo de atendimento não encontrado.");
 			FacesContext.getCurrentInstance().addMessage(
                     null,
-                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Tipo de atendimento não encontrado.",
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, getMsgSistema(),
                                 "Erro no cadastro!"));
 			return "cadastroAtendimento.xhtml";
 		}
@@ -422,14 +518,18 @@ public class MainController implements Serializable
 		
 		if ((this.atendimento.getMotivoExtenso() == null) || ("".equals(this.atendimento.getMotivoExtenso())))
 		{
+			setMsgSistema("Motivo de atendimento não encontrado.");
 			FacesContext.getCurrentInstance().addMessage(
                     null,
-                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Motivo de atendimento não encontrado.",
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, getMsgSistema(),
                                 "Erro no cadastro!"));
 			return "cadastroAtendimento.xhtml";
 		}
 		
-		this.atendimento.setData(new Date());
+		if (this.atendimento.getData() == null)
+		{
+			this.atendimento.setData(new Date());
+		}
 		
 		DetachedCriteria subCriteria = DetachedCriteria.forClass(Atendimento.class).setProjection( Projections.max("id") );
 		List<Atendimento> atendimentos = sessionBD.createCriteria(Atendimento.class).add( Property.forName("id").eq(subCriteria) ).list();
@@ -438,9 +538,10 @@ public class MainController implements Serializable
 		this.atendimento.setId(++id);
 		
 		sessionBD.save(this.atendimento);
-		closeHibernateSession();
-		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Cadastro realizado com sucesso!"));;
+		setMsgSistema("Cadastro realizado com sucesso!");
+		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(getMsgSistema()));
 		return "cadastroAtendimento.xhtml";
 	}
+
 
 }

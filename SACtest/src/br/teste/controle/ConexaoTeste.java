@@ -1,19 +1,22 @@
-package br.com.controle;
+package br.teste.controle;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
+import br.com.controle.Conexao;
+
 /**
- * Cria uma conexão no hibernate
+ * Cria uma conexão no hibernate para testes automatizados
  */
-public class Conexao 
+public class ConexaoTeste extends Conexao
 {
-	protected String HIBERNATE_CFG = "hibernate.cfg.xml";
+	String HIBERNATE_CFG = "hibernate-test.cfg.xml";
 	
 	/**
 	 * Traz uma SessionFactory a partir do xml de configuração do hibernate
 	 * @return SessionFactory retorna um factory de sessões do hibernate
 	 */
+	@Override
 	public SessionFactory getSessionFactory()
 	{
 		
@@ -25,5 +28,4 @@ public class Conexao
 		return sessionFactory;
 				
 	}
-
 }

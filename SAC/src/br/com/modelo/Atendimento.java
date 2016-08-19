@@ -19,7 +19,7 @@ import org.hibernate.validator.Length;
  */
 @Entity
 @ManagedBean(name = "atendimento")
-@Table(name = "public.\"ATENDIMENTO\"")
+@Table(name = "\"ATENDIMENTO\"")
 public class Atendimento implements java.io.Serializable
 {
 	private static final long serialVersionUID = 1L;
@@ -31,7 +31,7 @@ public class Atendimento implements java.io.Serializable
 	private String motivoExtenso;
 	private String detalhes;
 	private Date data;
-	
+
 	/**
 	 * Retorna o id do atendimento
 	 *@return id do atendimento.

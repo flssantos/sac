@@ -6,9 +6,9 @@
     <session-factory>
         <property name="connection.driver_class">org.postgresql.Driver</property>
         <property name="connection.password">sacsenha</property>
-        <property name="connection.url">jdbc:postgresql://localhost:5433/SAC_BD</property>
-        <property name="connection.username">sac</property>
-        <property name="default_schema">public</property>
+        <property name="connection.url">jdbc:postgresql://localhost:5433/SAC_TESTE</property>
+        <property name="connection.username">sacteste</property>
+        <property name="default_schema">teste</property>
         <property name="dialect">org.hibernate.dialect.PostgreSQLDialect</property>
         <property name="show_sql">true</property>
 		<property name="format_sql">true</property>

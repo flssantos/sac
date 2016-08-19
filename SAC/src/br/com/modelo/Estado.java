@@ -13,7 +13,7 @@ import org.hibernate.validator.Length;
  */
 @Entity
 @ManagedBean(name = "estado")
-@Table(name = "public.\"ESTADO\"")
+@Table(name = "\"ESTADO\"")
 public class Estado implements java.io.Serializable 
 {
 	private static final long serialVersionUID = 1L;
